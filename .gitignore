@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment (VERY IMPORTANT)
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Model files (optional but recommended for now)
+*.pth
+*.pt
+
+# OS files
+.DS_Store
+Thumbs.db
