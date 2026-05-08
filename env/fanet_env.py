@@ -2,6 +2,7 @@ import numpy as np
 from env.drone import Drone
 from env.attacks import gps_spoofing
 from config.config import NUM_DRONES, NUM_NORMAL, DT
+from env.observation import get_observation
 
 
 class FANETEnv:
@@ -28,11 +29,32 @@ class FANETEnv:
         # 1. Update physics
         for drone in self.drones:
             drone.update(DT)
+            
+        # Honest drones report true positions
+        for drone in self.drones:
+            if not drone.is_attacker:
+                drone.claimed_position = drone.position.copy()
 
         # 2. Apply attacks
         for drone in self.drones:
             if drone.is_attacker:
                 gps_spoofing(drone)
+        
+        # 3. Compute anomaly score
+        for drone in self.drones:
+
+            error = drone.gps_error()
+
+            drone.anomaly_score = error / 100.0
+
+    # reduce trust if suspicious
+            if drone.anomaly_score > 0.3:
+                drone.trust_score -= 0.05
+
+                drone.trust_score = max(
+                    drone.trust_score,
+                    0.0
+                )
 
         return self._get_state()
 
@@ -40,11 +62,11 @@ class FANETEnv:
         state = []
 
         for drone in self.drones:
-            state.append({
-                "id": drone.id,
-                "real_pos": drone.position,
-                "claimed_pos": drone.claimed_position,
-                "is_attacker": drone.is_attacker
-            })
+            obs = get_observation(
+                drone,
+                self.drones
+            )
+
+            state.append(obs)
 
         return state
