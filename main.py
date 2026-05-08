@@ -1,23 +1,44 @@
+import random
+
 from env.fanet_env import FANETEnv
+from config.action_space import ACTIONS
 
 env = FANETEnv()
 
 state = env.reset()
 
-for step in range(10):
+done = False
+step = 0
 
-    state = env.step()
+while not done:
+
+    # Random actions for now
+    actions = []
+
+    for _ in env.drones:
+        action = random.randint(0, 2)
+        actions.append(action)
+
+    next_state, rewards, done = env.step(actions)
 
     print(f"\n========== STEP {step} ==========")
 
-    for d in state:
+    for drone, action, reward in zip(
+        next_state,
+        actions,
+        rewards
+    ):
 
         print(
             f"""
-Drone {d['id']}
-Speed: {d['speed']:.2f}
-GPS Error: {d['gps_error']:.2f}
-Trust Score: {d['trust_score']:.2f}
-Anomaly Score: {d['anomaly_score']:.2f}
+Drone {drone['id']}
+Action: {ACTIONS[action]}
+Reward: {reward}
+
+GPS Error: {drone['gps_error']:.2f}
+Trust Score: {drone['trust_score']:.2f}
+Anomaly Score: {drone['anomaly_score']:.2f}
 """
         )
+
+    step += 1
