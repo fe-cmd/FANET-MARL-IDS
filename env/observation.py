@@ -42,3 +42,24 @@ def get_observation(drone, drones):
     }
 
     return obs
+
+def observation_to_vector(obs):
+
+    vector = []
+
+    # position
+    vector.extend(obs["position"])
+
+    # velocity
+    vector.extend(obs["velocity"])
+
+    # claimed position
+    vector.extend(obs["claimed_position"])
+
+    # scalar features
+    vector.append(obs["speed"])
+    vector.append(obs["gps_error"])
+    vector.append(obs["trust_score"])
+    vector.append(obs["anomaly_score"])
+
+    return np.array(vector, dtype=np.float32)

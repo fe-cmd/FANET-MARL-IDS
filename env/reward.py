@@ -1,28 +1,39 @@
 def compute_reward(drone, action):
     """
-    Reward shaping for IDS behavior
+    Improved reward shaping for stable PPO/MAPPO learning
     """
 
-    # attacker drone
+    # =========================
+    # ATTACKER DRONE
+    # =========================
     if drone.is_attacker:
 
-        if action == 2:  # isolate attacker
-            return 10
+        # WRONG: trusting attacker (very bad)
+        if action == 0:
+            return -15
 
-        elif action == 1:  # suspect attacker
-            return 5
+        # partial suspicion
+        elif action == 1:
+            return +5
 
-        else:  # trusted attacker
-            return -10
+        # correct isolation (BEST ACTION)
+        elif action == 2:
+            return +15
 
-    # honest drone
+
+    # =========================
+    # NORMAL DRONE
+    # =========================
     else:
 
-        if action == 0:  # correctly trusted
-            return 2
+        # correct trust
+        if action == 0:
+            return +3
 
-        elif action == 1:  # falsely suspected
+        # mild penalty (uncertain behavior)
+        elif action == 1:
             return -2
 
-        else:  # falsely isolated
-            return -5
+        # strong penalty (false isolation)
+        elif action == 2:
+            return -6
