@@ -6,4 +6,4 @@ def gps_spoofing(drone, intensity=0.5):
     """
     offset = np.random.uniform(-50, 50, size=3) * intensity
 
-    drone.claimed_position = drone.position + offset
+    drone.claimed_position = drone.position + offset 
