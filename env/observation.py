@@ -36,6 +36,7 @@ def get_observation(drone, drones):
         "gps_error": drone.gps_error(),
         "trust_score": drone.trust_score,
         "anomaly_score": drone.anomaly_score,
+        "attack_severity": drone.attack_severity,
 
         # FANET topology
         "neighbor_distances": neighbors
@@ -61,5 +62,6 @@ def observation_to_vector(obs):
     vector.append(obs["gps_error"])
     vector.append(obs["trust_score"])
     vector.append(obs["anomaly_score"])
+    vector.append(obs["attack_severity"])
 
     return np.array(vector, dtype=np.float32)

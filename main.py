@@ -13,14 +13,17 @@ from config.action_space import ACTIONS
 # ENV SETUP
 # =========================
 env = FANETEnv()
+env.set_attack_type("blackhole")
 
-obs_dim = 13
+print("\n=== ATTACK SEVERITY DIAGNOSTIC ===")
+
+obs_dim = 14
 action_dim = 3
 
 agent = MAPPOAgent(obs_dim, action_dim)
 buffer = ReplayBuffer()
 
-NUM_EPISODES = 200
+NUM_EPISODES = 5
 
 
 # =========================
@@ -67,6 +70,17 @@ for episode in range(NUM_EPISODES):
         # 2. ENV STEP
         # =========================
         next_state, rewards, done = env.step(actions)
+        
+        # =========================
+        # ATTACK SEVERITY DIAGNOSTIC
+        # =========================
+        if env.time == 1:
+            for drone in env.drones:
+                print(
+                    f"Drone {drone.id} | "
+                    f"Attacker: {drone.is_attacker} | "
+                    f"Attack Severity: {drone.attack_severity:.4f}"
+                )
 
         # =========================
         # 3. STORE EXPERIENCE

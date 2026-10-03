@@ -17,6 +17,7 @@ class Drone:
         # IDS-related
         self.trust_score = 1.0
         self.anomaly_score = 0.0
+        self.attack_severity = 0.0
 
     def update(self, dt):
         self.position += self.velocity * dt
